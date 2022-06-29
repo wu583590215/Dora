@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wq.dora.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.wq.dora.entity.Role">
+    <id column="ROLE_NO" jdbcType="VARCHAR" property="roleNo" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dora_role
+    where role_no = #{roleNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.wq.dora.entity.Role">
+    insert into dora_role (role_no, role_name)
+    values (#{roleNo,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.wq.dora.entity.Role">
+    update dora_role
+    set role_name = #{roleName,jdbcType=VARCHAR}
+    where role_no = #{roleNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select role_no, role_name
+    from dora_role
+    where role_no = #{roleNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" parameterType="com.wq.dora.entity.Role" resultMap="BaseResultMap">
+    select role_no, role_name
+    from dora_role
+    where 1=1
+    <if test="roleNo != '' and roleNo != null">and role_no = #{roleNo}</if>
+    <if test="roleName != '' and roleName != null">and role_name = #{roleName}</if>
+
+
+  </select>
+</mapper>

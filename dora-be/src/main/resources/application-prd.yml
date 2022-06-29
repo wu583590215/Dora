@@ -1,0 +1,36 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
+  datasource:
+    dynamic:
+      primary: app #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候回抛出异常,不启动会使用默认数据源.
+      datasource:
+        app:
+          username: db2inst1
+          password: db2inst1
+          url: jdbc:db2://10.90.77.187:50000/app:currentSchema=APP;
+          driver-class-name: com.ibm.db2.jcc.DB2Driver
+
+logging:
+  level:
+    com.baomidou: info
+    com.wq.dora: info
+
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true #设置mybatis驼峰匹配
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.wq.dora.entity
+server:
+  port: 8089

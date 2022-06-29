@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wq.dora.mapper.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="com.wq.dora.entity.Department">
+    <id column="DEP_NO" jdbcType="VARCHAR" property="depNo" />
+    <result column="DEP_NAME" jdbcType="VARCHAR" property="depName" />
+    <result column="PARENT_DEP_NO" jdbcType="VARCHAR" property="parentDepNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dora_department
+    where dep_no = #{depNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.wq.dora.entity.Department">
+    insert into dora_department (dep_no, dep_name, parent_dep_no
+      )
+    values (#{depNo,jdbcType=VARCHAR}, #{depName,jdbcType=VARCHAR}, #{parentDepNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.wq.dora.entity.Department">
+    update dora_department
+    set dep_name = #{depName,jdbcType=VARCHAR},
+      parent_dep_no = #{parentDepNo,jdbcType=VARCHAR}
+    where dep_no = #{depNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select dep_no, dep_name, parent_dep_no
+    from dora_department
+    where dep_no = #{depNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectChildCount" parameterType="java.lang.String" resultType="int">
+    select count(1)
+    from dora_department
+    where parent_dep_no = #{depNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select dep_no, dep_name, parent_dep_no
+    from dora_department
+  </select>
+</mapper>

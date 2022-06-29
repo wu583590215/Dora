@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wq.dora.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.wq.dora.entity.User">
+        <id column="USER_NO" jdbcType="VARCHAR" property="userNo"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="DEP_NO" jdbcType="VARCHAR" property="depNo"/>
+        <result column="DEP_NAME" jdbcType="VARCHAR" property="depName"/>
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+    </resultMap>
+    <update id="updatePassword">
+     update dora_user set PASSWORD = #{password,jdbcType=VARCHAR} where USER_NO = #{userNo,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from dora_user
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </delete>
+
+    <insert id="insert" parameterType="com.wq.dora.entity.User">
+    insert into dora_user (user_no, user_name, dep_no,
+      dep_name, password, status
+      )
+    values (#{userNo,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{depNo,jdbcType=VARCHAR}, 
+      #{depName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.wq.dora.entity.User">
+    update dora_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      dep_no = #{depNo,jdbcType=VARCHAR},
+      dep_name = #{depName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </update>
+
+    <update id="resetPassword" parameterType="java.lang.String">
+    update dora_user
+    set password = #{password,jdbcType=VARCHAR}
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select user_no, user_name, dep_no, dep_name, password, status
+    from dora_user
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select user_no, user_name, dep_no, dep_name, password, status
+    from dora_user
+  </select>
+    <select id="selectUserPositions" parameterType="java.lang.String" resultType="java.lang.String">
+    select * from dora_position_relative
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
+    <select id="selectRoles" parameterType="java.lang.String" resultType="java.lang.String">
+    select * from dora_role_relative
+    where user_no = #{userNo,jdbcType=VARCHAR}
+  </select>
+    <insert id="insertPositions">
+        INSERT INTO dora_position_relative (position_no,user_no)
+        VALUES
+        <foreach collection="posList" item="item" index="index" separator=",">
+            (
+            #{item},
+            #{userNo}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deletePositions">
+        delete from dora_position_relative
+        where user_no = #{userNo}
+        and position_no in
+        (
+        <foreach collection="posList" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+    </delete>
+
+    <delete id="deleteAllPositions">
+    delete from dora_position_relative
+    where user_no = #{userNo}
+  </delete>
+
+    <insert id="insertRoles">
+        INSERT INTO dora_role_relative (role_no,user_no)
+        VALUES
+        <foreach collection="roleList" item="item" index="index" separator=",">
+            (
+            #{item},
+            #{userNo}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoles">
+        delete from dora_role_relative
+        where user_no = #{userNo}
+        and role_no in
+        (
+        <foreach collection="roleList" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+    </delete>
+
+    <delete id="deleteAllRoles">
+    delete from dora_role_relative
+    where user_no = #{userNo}
+  </delete>
+</mapper>

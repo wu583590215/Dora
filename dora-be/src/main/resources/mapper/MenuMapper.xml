@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wq.dora.mapper.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.wq.dora.entity.Menu">
+    <id column="menu_no" jdbcType="VARCHAR" property="menuNo" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+    <result column="router" jdbcType="VARCHAR" property="router" />
+    <result column="role_flag" jdbcType="VARCHAR" property="roleFlag" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="parent_menu_no" jdbcType="VARCHAR" property="parentMenuNo" />
+  </resultMap>
+  
+  <select id="selectMenuRel" parameterType="java.lang.String" resultType="java.lang.String">
+    select relative_no from dora_menu_relative
+    where menu_no = #{menuNo,jdbcType=VARCHAR}
+    and relative_type = #{relativeType,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteMenu" parameterType="java.lang.String">
+    delete from dora_menu
+    where menu_no = #{menuNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteAllMenuRel" parameterType="java.lang.String">
+    delete from dora_menu_relative
+    where menu_no = #{menuNo,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.wq.dora.entity.Menu">
+    insert into dora_menu (menu_no, menu_name, router,
+      icon, parent_menu_no,role_flag)
+    values (#{menuNo,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{router,jdbcType=VARCHAR}, 
+      #{icon,jdbcType=VARCHAR}, #{parentMenuNo,jdbcType=VARCHAR},#{roleFlag,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.wq.dora.entity.Menu">
+    update dora_menu
+    set menu_name = #{menuName,jdbcType=VARCHAR},
+      router = #{router,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      parent_menu_no = #{parentMenuNo,jdbcType=VARCHAR},
+      role_flag = #{roleFlag,jdbcType=VARCHAR}
+    where menu_no = #{menuNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select menu_no, menu_name, router, icon, parent_menu_no,role_flag
+    from dora_menu
+    where menu_no = #{menuNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select menu_no, menu_name, router, icon, parent_menu_no,role_flag
+    from dora_menu
+  </select>
+  <insert id="insertMenuRel">
+    INSERT INTO dora_menu_relative (menu_no,relative_no,relative_type)
+    VALUES
+    <foreach collection="noList" item="item" index="index" separator=",">
+      (
+      #{menuNo},
+      #{item},
+      #{type}
+      )
+    </foreach>
+  </insert>
+
+
+  <delete id="deleteMenuRel">
+    delete from dora_menu_relative
+    where menu_no = #{menuNo}
+    and relative_type = #{relativeType}
+    and relative_no in
+    (
+    <foreach collection="deleteList" item="item" index="index" separator=",">
+      #{item}
+    </foreach>
+    )
+  </delete>
+
+  <select id="checkMenuRole" resultType="java.lang.Integer">
+    select count(1) from dora_menu_relative
+    where menu_no = #{menuNo}
+    and relative_type = #{relativeType}
+    and relative_no in
+    (
+    <foreach collection="roleList" item="item" index="index" separator=",">
+      #{item}
+    </foreach>
+    )
+  </select>
+
+</mapper>
